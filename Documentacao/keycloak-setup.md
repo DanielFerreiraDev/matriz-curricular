@@ -1,111 +1,159 @@
-# Configuração Keycloak
+# Configuração do Keycloak
 
-Após iniciar container do keycloak:
+Este documento descreve a configuração do Keycloak utilizada no projeto, incluindo a criação do Realm, Roles, Clients e usuários de teste.
 
-Acessar o Admin Console.
+A configuração pode ser realizada **manualmente** para entendimento do processo ou **automaticamente**, utilizando importação via Docker.
 
-http://localhost:8080
+---
 
-Login no Account Console com usuários:
-http://localhost:8080/realms/matriz-curricular/account
+## Acesso ao Keycloak
 
-- Login: admin
-- Senha: admin
+Após subir os containers, acesse o **Admin Console**:
 
-## Realm
-Criar novo Realm
+- URL: http://localhost:8080
+- Usuário: `admin`
+- Senha: `admin`
 
-- Nome: matriz-curricular
+### Account Console (usuários finais)
 
-## Roles
-Criar papeis necessários
-- ALUNO
-- COORDENADOR
+- URL: http://localhost:8080/realms/matriz-curricular/account
+- Login: `usuario`
+- Senha: `senha_usuario`
 
-## Clients
+---
 
-### backend
+## Configuração Manual
+
+### Realm
+
+Criar um novo Realm com o nome:
+
+- `matriz-curricular`
+
+---
+
+### Roles
+
+Criar os seguintes papéis (Realm Roles):
+
+- `ALUNO`
+- `COORDENADOR`
+
+---
+
+### Clients
+
+#### Client: backend
+
 - Client type: OpenID Connect
-- Client ID: backend
+- Client ID: `backend`
 - Name: Backend API
-- Client authentication: ✅ ON 
-- Authorization: ❌ OFF 
-- Standard flow: ❌ OFF 
-- Direct access grants: ❌ OFF 
-- Service accounts roles: ✅ ON
-- URLs (pode deixar vazio)
+- Client authentication:  ON
+- Authorization:  OFF
+- Standard flow:  OFF
+- Direct access grants:  OFF
+- Service accounts roles:  ON
+- URLs: (pode deixar vazio)
 
-### frontend
-- Client type: OpenID Connect 
-- Client ID: frontend
+---
+
+#### Client: frontend
+
+- Client type: OpenID Connect
+- Client ID: `frontend`
 - Name: Frontend
-- Client authentication: ❌ OFF 
-- Authorization: ❌ OFF 
-- Standard flow: ✅ ON 
-- Direct access grants: ❌ OFF 
-- Service accounts roles: ❌ OFF
+- Client authentication:  OFF
+- Authorization:  OFF
+- Standard flow:  ON
+- Direct access grants:  OFF
+- Service accounts roles:  OFF
 - Root URL: http://localhost:4200
 - Valid redirect URIs: http://localhost:4200/*
 - Web origins: http://localhost:4200
 
-## Grupos
+---
 
-Criar grupo:
+### Grupos
 
-- alunos
-- coordenadores
+Criar os seguintes grupos:
+
+- `alunos`
+- `coordenadores`
 
 Em cada grupo:
 
-Role mapping
-- Atribuir role correspondente
+- Acessar **Role mapping**
+- Atribuir a role correspondente ao grupo
 
-## Usuários de Teste
+---
 
-**Usuário Aluno:**
+### Usuários de Teste
 
-- Username: aluno1
-- Email verified: ✅ (opcional)
-- First name:
-- Last name:
-- Groups: Join Groups (alunos)
-- Create
+#### Usuário Aluno
 
-Definir senha
-- Aba Credentials
-- Set password
-- Temporary: ❌
+- Username: `aluno1`
+- Email verified: ON (opcional)
+- Groups: `alunos`
 
-Atribuir role (não necessário se já foi atribuido a um grupo)
+Definir senha:
+- Aba **Credentials**
+- Temporary: OFF
 
-- Aba Role mapping
-- Assign role
-- Realm roles → ALUNO
-- Assign
+> Não é necessário atribuir a role manualmente caso o usuário pertença ao grupo correto.
 
-**Usuário Coordenador:**
+---
 
-- Username: coord1
-- Email verified: ✅ (opcional)
-- First name:
-- Last name:
-- Groups: Join Groups (coordenadores)
-- Create
+#### Usuário Coordenador
 
-Definir senha
-- Aba Credentials
-- Set password
-- Temporary: ❌
+- Username: `coord1`
+- Email verified: ON (opcional)
+- Groups: `coordenadores`
 
-Atribuir role (não necessário se já foi atribuido a um grupo)
+Definir senha:
+- Aba **Credentials**
+- Temporary: OFF
 
-- Aba Role mapping
-- Assign role
-- Realm roles → COORDENADOR
-- Assign
+> Não é necessário atribuir a role manualmente caso o usuário pertença ao grupo correto.
 
+---
 
-| Usuário    | Nome   | Sobrenome  | Senha          | Grupo         | Papel       |
-|------------|--------|------------|----------------|---------------|-------------|
-| aluno1     | Daniel | Nascimento | unifor123      | alunos        | ALUNO       |
-| joaocarlos | João   | Carlos     | coordenacao123 | coordenadores | COORDENADOR |
+### Usuários Criados
+
+| Usuário | Nome   | Sobrenome  | Senha          | Grupo         | Papel       |
+|---------|--------|------------|----------------|---------------|-------------|
+| aluno1  | Daniel | Nascimento | unifor123      | alunos        | ALUNO       |
+| coord1  | João   | Carlos     | coordenacao123 | coordenadores | COORDENADOR |
+
+---
+
+## Configuração Automática (Importação via Docker)
+
+Para facilitar a execução do projeto, a configuração do Keycloak é importada automaticamente ao subir os containers.
+
+### Exportar o Realm para JSON
+
+```bash
+  docker exec matriz-curricular-keycloak \
+  /opt/keycloak/bin/kc.sh export \
+  --file /tmp/matriz-realm.json \
+  --realm matriz-curricular
+```
+
+### Verificar se o arquivo foi criado
+
+```docker exec matriz-curricular-keycloak ls -lh /tmp/matriz-realm.json```
+
+### Copiar o arquivo para o projeto
+
+```mkdir -p keycloak-config```
+
+```docker cp matriz-curricular-keycloak:/tmp/matriz-realm.json ./keycloak-config/matriz-realm.json```
+
+### Importação automática via Docker Compose
+
+No docker-compose.yml, o arquivo é montado no container do Keycloak:
+
+```./keycloak-config/matriz-realm.json:/opt/keycloak/data/import/realm.json```
+
+**Assim, sempre que o container do Keycloak for recriado, o Realm com toda configuração será importado automaticamente, 
+garantindo um ambiente inicial consistente para os testes.**

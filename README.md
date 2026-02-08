@@ -10,9 +10,18 @@ O objetivo do projeto é demonstrar boas práticas de desenvolvimento, organiza�
 
 ```text
 ├── backend/
-├── frontend/
-├── docker-compose.yml
 ├── Documentação/
+    ├── DECISOES_TECNICAS.md
+    ├── EXECUCAO.md
+    ├── keycloak-setup.md
+    ├── README.md/
+├── frontend/
+├── keycloak-config/
+    ├── matriz-realm.json
+├── .gitignore
+├── docker-compose.yml
+├── init-db.sh
+├── README.md
 ```
 
 ## Backend

@@ -8,11 +8,19 @@
 
 ## Decisões Adotadas
 
-### Autenticação
-- Na autenticação, optei por utilizar Realm Roles no Keycloak para simplificar o controle de acesso no backend com Quarkus, 
-permitindo o uso direto de @RolesAllowed, reduzindo complexidade e risco de erro.
-- Sobre gerenciamento de usuários, optei por criar grupos para que os usuários possam a herdar roles do grupo.
-- O secret do client backend é configurado via variável de ambiente (.env), conforme boas práticas de segurança.
+### Autenticação e Autorização
+
+Ao ser adotado o Keycloak como provedor de identidade utilizando OAuth2 com OpenID Connect. Optei pelo uso de **Realm Roles** em conjunto com **Groups**, permitindo:
+
+- Mapeamento direto de roles no token JWT
+- Uso nativo de `@RolesAllowed` no backend Quarkus
+- Redução de lógica customizada de autorização
+
+O client `backend` utiliza autenticação via **Client Credentials**, enquanto o `frontend` utiliza **Authorization Code Flow (PKCE)**.
+
+O secret do client backend é configurado via variável de ambiente (.env), seguindo boas práticas de segurança.
+
+Durante a integração em ambiente Docker, foi necessário ajustar a configuração de hostname do Keycloak para garantir consistência do `issuer` (`iss`) nos tokens JWT, evitando falhas de validação no backend.
 
 
 ### Backend
