@@ -33,6 +33,7 @@ Necessário para criação do banco, schema persistências das configs do keyclo
 onde o Docker vai importar esse arquivo no container novo sempre que for criado, garantindo assim um cenário de inicial de teste da aplicação.
  - Exportar arquivo .json:
    - docker exec matriz-curricular-keycloak /opt/keycloak/bin/kc.sh export --file /tmp/matriz-realm.json --realm nome_do_realm 
+   - Nos logs gerará um erro mas é porque o serviço do keycloak está usando a mesma porta que o processo de exportar o json, mas o importante é verificar se o arquivo foi criado. 
  - Verificar se o arquivo foi criado:
    - docker exec matriz-curricular-keycloak ls -lh /tmp/matriz-realm.json
  - Crie a pasta no seu projeto primeiro
@@ -42,4 +43,9 @@ onde o Docker vai importar esse arquivo no container novo sempre que for criado,
  - Crie um volume no serviço Keycloak no arquivo docker-compose.yml:
    - ./keycloak-config/matriz-realm.json:/opt/keycloak/data/import/realm.json
 
-
+- Autenticando tokens do client e dos usuários no backend e testando endpoints com validação de Roles.
+- Removendo necessidade do campo e-mail dos usuários no Realm settings > User profile > Edit attribute
+- Corrigindo erro de iss claim value: Ao realizar requisições pro backend via Postman mesmo com o token válido, o backend
+não confia nele porque o Keycloak gerou o token com iss = localhost e o Quarkus espera iss = keycloak.
+  - Foi realizado um ajuste no ```docker-compose.yml``` onde ao setar KC_HOSTNAME: http://localhost:8080, KC_HOSTNAME_STRICT: false,
+    e KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true. Para evitar inconsistências de issuer entre backend, frontend e keycloak e manter simplicidade no setup Docker.

@@ -4,7 +4,10 @@ Após iniciar container do keycloak:
 
 Acessar o Admin Console.
 
-```http://localhost:8080```
+http://localhost:8080
+
+Login no Account Console com usuários:
+http://localhost:8080/realms/matriz-curricular/account
 
 - Login: admin
 - Senha: admin
@@ -102,7 +105,7 @@ Atribuir role (não necessário se já foi atribuido a um grupo)
 - Assign
 
 
-| Usuário | Nome   | Sobrenome  | Senha          | Grupo         | Papel       |
-|---------|--------|------------|----------------|---------------|-------------|
-| aluno1  | Daniel | Nascimento | unifor123      | alunos        | ALUNO       |
-| coord1  | João   | Carlos     | coordenacao123 | coordenadores | COORDENADOR |
+| Usuário    | Nome   | Sobrenome  | Senha          | Grupo         | Papel       |
+|------------|--------|------------|----------------|---------------|-------------|
+| aluno1     | Daniel | Nascimento | unifor123      | alunos        | ALUNO       |
+| joaocarlos | João   | Carlos     | coordenacao123 | coordenadores | COORDENADOR |

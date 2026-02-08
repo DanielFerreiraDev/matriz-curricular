@@ -28,6 +28,9 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: http://localhost:8080
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
       KC_DB: postgres
       KC_DB_SCHEMA: keycloak
       KC_DB_USERNAME: keycloak
@@ -38,7 +41,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 5s
     depends_on:
       - db
     ports:
