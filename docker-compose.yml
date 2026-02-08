@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: matriz-curricular-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    environment:
+      POSTGRES_DB: matrizcurricular
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d matrizcurricular" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: matriz-curricular-keycloak
+    command: start-dev --import-realm
+    volumes:
+      - ./keycloak-config/matriz-realm.json:/opt/keycloak/data/import/realm.json
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_SCHEMA: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_DB_URL: jdbc:postgresql://db:5432/keycloak
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+  backend:
+    container_name: matriz-curricular-backend
+    build:
+      context: ./backend
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/matrizcurricular
+      - KEYCLOAK_BACKEND_SECRET=${KEYCLOAK_BACKEND_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+
+volumes:
+  postgres_data:
