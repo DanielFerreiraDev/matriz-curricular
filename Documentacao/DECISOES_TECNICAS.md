@@ -28,6 +28,9 @@ Durante a integração em ambiente Docker, foi necessário ajustar a configuraç
 
 ### Frontend
 
+O frontend utiliza autenticação baseada em token (OAuth2/OIDC).
+- O logout foi implementado de forma explícita limpando tokens locais e invalidando a sessão quando existente, evitando auto-login silencioso e garantindo previsibilidade do fluxo.
+
 
 ### Banco de dados
 

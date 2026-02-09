@@ -1,29 +1,29 @@
 {
-  "name": "shop",
+  "name": "matrizcurricular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/shop/src",
+  "sourceRoot": "apps/matrizcurricular/src",
   "tags": ["scope:shop"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/shop",
-        "browser": "apps/shop/src/main.ts",
+        "outputPath": "dist/apps/matrizcurricular",
+        "browser": "apps/matrizcurricular/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/shop/tsconfig.app.json",
+        "tsConfig": "apps/matrizcurricular/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/shop/public"
+            "input": "apps/matrizcurricular/public"
           }
         ],
-        "styles": ["apps/shop/src/styles.css"],
-        "server": "apps/shop/src/main.server.ts",
+        "styles": ["apps/matrizcurricular/src/styles.css"],
+        "server": "apps/matrizcurricular/src/main.server.ts",
         "ssr": {
-          "entry": "apps/shop/src/server.ts"
+          "entry": "apps/matrizcurricular/src/server.ts"
         },
         "outputMode": "server"
       },
@@ -57,21 +57,21 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "shop:build:production"
+          "buildTarget": "matrizcurricular:build:production"
         },
         "development": {
-          "buildTarget": "shop:build:development"
+          "buildTarget": "matrizcurricular:build:development"
         }
       },
       "defaultConfiguration": "development",
       "options": {
-        "proxyConfig": "apps/shop/proxy.conf.json"
+        "proxyConfig": "apps/matrizcurricular/proxy.conf.json"
       }
     },
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
       "options": {
-        "buildTarget": "shop:build"
+        "buildTarget": "matrizcurricular:build"
       }
     },
     "lint": {
@@ -81,16 +81,16 @@
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "reportsDirectory": "../../coverage/apps/shop"
+        "reportsDirectory": "../../coverage/apps/matrizcurricular"
       }
     },
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "shop:build",
+        "buildTarget": "matrizcurricular:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/shop/browser",
+        "staticFilePath": "dist/apps/matrizcurricular/browser",
         "spa": true
       }
     }

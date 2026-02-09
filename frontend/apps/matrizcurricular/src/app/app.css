@@ -64,3 +64,8 @@
   margin: 8px 0;
   font-size: 0.9rem;
 }
+.logout-btn {
+  margin-left: 1rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}

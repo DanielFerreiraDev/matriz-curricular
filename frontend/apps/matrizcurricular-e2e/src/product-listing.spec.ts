@@ -6,7 +6,9 @@ test.describe('Product Listing Page', () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  test('should display products grid with at least one product', async ({ page }) => {
+  test('should display products grid with at least one product', async ({
+    page,
+  }) => {
     // Check that products are displayed
     const productCards = page.locator('[class*="product-card"]');
     const count = await productCards.count();
@@ -35,10 +37,14 @@ test.describe('Product Listing Page', () => {
     await categoryDropdown.selectOption('Electronics');
 
     // Wait for products to load
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await page.waitForFunction(
+      () => document.querySelectorAll('[class*="product-card"]').length > 0,
+    );
 
     // Verify all visible products are from Electronics category
-    const productCategories = page.locator('[class*="product-card"] p:first-of-type');
+    const productCategories = page.locator(
+      '[class*="product-card"] p:first-of-type',
+    );
     const count = await productCategories.count();
 
     for (let i = 0; i < count; i++) {
@@ -53,7 +59,9 @@ test.describe('Product Listing Page', () => {
     await searchInput.fill('Product 1');
 
     // Wait for debounce and results
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await page.waitForFunction(
+      () => document.querySelectorAll('[class*="product-card"]').length > 0,
+    );
 
     // Check that filtered products contain the search term
     const productNames = page.locator('[class*="product-card"] h3');
@@ -77,11 +85,13 @@ test.describe('Product Listing Page', () => {
     // Wait for the results to update (the total count should change)
     await page.waitForFunction(
       (initialText) => {
-        const resultsElement = document.querySelector('[class*="results-info"]');
+        const resultsElement = document.querySelector(
+          '[class*="results-info"]',
+        );
         return resultsElement && resultsElement.textContent !== initialText;
       },
       initialText,
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
 
     // Additional wait to ensure DOM is fully updated
@@ -111,7 +121,9 @@ test.describe('Product Listing Page', () => {
     await nextButton.click();
 
     // Wait for new products to load
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await page.waitForFunction(
+      () => document.querySelectorAll('[class*="product-card"]').length > 0,
+    );
 
     // Verify page changed
     const newPageInfo = await pageInfo.textContent();

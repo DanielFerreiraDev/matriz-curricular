@@ -55,6 +55,7 @@ Inclui os seguintes serviços:
 - Keycloak (autenticação e autorização)
 - Banco de dados PostgreSQL
 
+[//]: # (PRÓXIMO COMMIT DE DOC, SUBIR SEÇÃO E DANDO FOCO NELA)
 ## Documentação
 
 Contém toda a documentação necessária para entendimento, execução e testes do projeto.

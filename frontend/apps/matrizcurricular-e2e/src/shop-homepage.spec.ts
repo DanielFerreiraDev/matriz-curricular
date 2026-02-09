@@ -21,7 +21,7 @@ test.describe('Shop Homepage', () => {
     const footer = page.locator('footer');
     await expect(footer).toContainText('© 2025 Nx Shop Demo');
     await expect(footer).toContainText(
-      'Frontend (Angular) + Backend (Express) + Shared Libraries'
+      'Frontend (Angular) + Backend (Express) + Shared Libraries',
     );
   });
 

@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Navigation and User Flow', () => {
-  test('should complete a full user journey through the app', async ({ page }) => {
+  test('should complete a full user journey through the app', async ({
+    page,
+  }) => {
     // Start at home page
     await page.goto('/');
 
@@ -15,7 +17,9 @@ test.describe('Navigation and User Flow', () => {
     // Search for a specific product
     const searchInput = page.locator('input[placeholder*="Search"]');
     await searchInput.fill('Product 1');
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await page.waitForFunction(
+      () => document.querySelectorAll('[class*="product-card"]').length > 0,
+    );
 
     // Click on the first search result
     const firstResult = page.locator('[class*="product-card"]').first();
@@ -26,7 +30,9 @@ test.describe('Navigation and User Flow', () => {
     await page.waitForURL('**/products/**');
 
     // Verify product detail page
-    const detailProductName = page.locator('h1').filter({ hasText: productName || '' });
+    const detailProductName = page
+      .locator('h1')
+      .filter({ hasText: productName || '' });
     await expect(detailProductName).toBeVisible();
 
     // Click back to products
@@ -71,7 +77,9 @@ test.describe('Navigation and User Flow', () => {
     await searchInput.fill('Product');
 
     // Wait for filtered results
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await page.waitForFunction(
+      () => document.querySelectorAll('[class*="product-card"]').length > 0,
+    );
 
     // Navigate to a product
     const product = page.locator('[class*="product-card"]').first();
@@ -143,7 +151,7 @@ test.describe('Navigation and User Flow', () => {
 
   test('should display loading states during navigation', async ({ page }) => {
     // Enable slow network to see loading states
-    await page.route('**/*', route => {
+    await page.route('**/*', (route) => {
       setTimeout(() => route.continue(), 100);
     });
 
