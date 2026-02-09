@@ -16,17 +16,17 @@ export class KeycloakService {
       return;
     }
 
+    const config = await fetch('/assets/keycloak-config.json').then(res => res.json());
+
     this.keycloak = new Keycloak({
-      url: 'http://localhost:8080',
-      realm: 'matriz-curricular',
-      clientId: 'frontend',
+      url: config.keycloakUrl,
+      realm: config.keycloakRealm,
+      clientId: config.keycloakClientId,
     });
 
     const authenticated = await this.keycloak.init({
       onLoad: 'login-required',
       checkLoginIframe: false,
-      silentCheckSsoRedirectUri:
-        window.location.origin + '/assets/silent-check-sso.html',
     });
 
   }

@@ -13,9 +13,9 @@ services:
       POSTGRES_PASSWORD: postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d matrizcurricular" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 3s
+      timeout: 3s
+      retries: 3
     ports:
       - "5432:5432"
 
@@ -28,9 +28,9 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME: http://localhost:8080
       KC_HOSTNAME_STRICT: false
-      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
       KC_DB: postgres
       KC_DB_SCHEMA: keycloak
       KC_DB_USERNAME: keycloak
@@ -38,8 +38,8 @@ services:
       KC_DB_URL: jdbc:postgresql://db:5432/keycloak
     healthcheck:
       test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
-      interval: 5s
-      timeout: 5s
+      interval: 10s
+      timeout: 10s
       retries: 10
       start_period: 5s
     depends_on:
@@ -61,6 +61,15 @@ services:
         condition: service_healthy
     ports:
       - "8081:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: apps/matrizcurricular/Dockerfile
+    container_name: matriz-curricular-frontend
+    ports:
+      - "80:80"
+    restart: always
 
 volumes:
   postgres_data:

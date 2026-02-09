@@ -20,12 +20,7 @@
             "input": "apps/matrizcurricular/public"
           }
         ],
-        "styles": ["apps/matrizcurricular/src/styles.css"],
-        "server": "apps/matrizcurricular/src/main.server.ts",
-        "ssr": {
-          "entry": "apps/matrizcurricular/src/server.ts"
-        },
-        "outputMode": "server"
+        "styles": ["apps/matrizcurricular/src/styles.css"]
       },
       "configurations": {
         "production": {

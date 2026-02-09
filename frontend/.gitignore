@@ -75,3 +75,4 @@ CLAUDE.md
 .github/instructions/
 
 .angular
+package-lock.json
