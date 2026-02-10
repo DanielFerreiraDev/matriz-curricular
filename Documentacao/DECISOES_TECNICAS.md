@@ -25,6 +25,8 @@ Durante a integração em ambiente Docker, foi necessário ajustar a configuraç
 
 ### Backend
 
+- O backend consome o sub do JWT como identificador do usuário e usa esse valor como chave primária nas entidades acadêmicas, garantindo desacoplamento entre autenticação e domínio.
+
 
 ### Frontend
 
@@ -34,6 +36,9 @@ O frontend utiliza autenticação baseada em token (OAuth2/OIDC).
 
 ### Banco de dados
 
+- As tabelas e entidades base (disciplinas, professores, cursos, alunos e coordenadores) são pré-carregadas via script SQL, sendo rodado pelo Docker. 
+conforme especificado no desafio, e são apenas consumidas pelo sistema.
+- “O schema é controlado por scripts SQL versionados. O Hibernate está configurado apenas para leitura do modelo.”
 
 ### Simplificações
 
