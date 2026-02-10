@@ -7,8 +7,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import io.quarkus.security.Authenticated;
 
-@Path("/api/v1/matriz")
-public class MatrizResource {
+@Path("/v1/matriz")
+public class MatrizResourceHealth {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)

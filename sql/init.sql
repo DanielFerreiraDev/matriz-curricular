@@ -1,17 +1,5 @@
 SET search_path TO matrizcurricular;
 
-
-CREATE TABLE alunos (
-    id UUID PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE coordenadores (
-    id UUID PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL
-);
-
-
 CREATE TABLE cursos (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL UNIQUE
@@ -27,66 +15,44 @@ CREATE TABLE professores (
     nome VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE horarios (
+CREATE TABLE IF NOT EXISTS horarios (
     id BIGSERIAL PRIMARY KEY,
-    descricao VARCHAR(50) NOT NULL
+    dia_semana VARCHAR(10) NOT NULL CHECK (dia_semana IN ('MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY')),
+    inicio TIME NOT NULL,
+    fim TIME NOT NULL,
+    CONSTRAINT ck_horario_intervalo CHECK (inicio < fim)
 );
 
 
-CREATE TABLE aulas (
+CREATE TABLE IF NOT EXISTS aulas (
     id BIGSERIAL PRIMARY KEY,
 
-    disciplina_id BIGINT NOT NULL,
-    professor_id BIGINT NOT NULL,
-    horario_id BIGINT NOT NULL,
+    disciplina_id BIGINT NOT NULL REFERENCES disciplinas(id),
+    professor_id  BIGINT NOT NULL REFERENCES professores(id),
+    horario_id    BIGINT NOT NULL REFERENCES horarios(id),
+
     coordenador_id UUID NOT NULL,
 
     vagas_maximas INT NOT NULL CHECK (vagas_maximas > 0),
     vagas_ocupadas INT NOT NULL DEFAULT 0 CHECK (vagas_ocupadas >= 0),
 
-    ativa BOOLEAN NOT NULL DEFAULT TRUE,
-
-    CONSTRAINT fk_aula_disciplina
-    FOREIGN KEY (disciplina_id) REFERENCES disciplinas (id),
-
-    CONSTRAINT fk_aula_professor
-    FOREIGN KEY (professor_id) REFERENCES professores (id),
-
-    CONSTRAINT fk_aula_horario
-    FOREIGN KEY (horario_id) REFERENCES horarios (id),
-
-    CONSTRAINT fk_aula_coordenador
-    FOREIGN KEY (coordenador_id) REFERENCES coordenadores (id)
+    ativa BOOLEAN NOT NULL DEFAULT TRUE
 );
 
+-- regra: mesma disciplina pode repetir, mas NÃO no mesmo horário
+CREATE UNIQUE INDEX IF NOT EXISTS uk_aula_disciplina_horario
+ON aulas (disciplina_id, horario_id);
 
-CREATE TABLE matriculas (
+CREATE TABLE IF NOT EXISTS aula_cursos (
+    aula_id  BIGINT NOT NULL REFERENCES aulas(id) ON DELETE CASCADE,
+    curso_id BIGINT NOT NULL REFERENCES cursos(id),
+    PRIMARY KEY (aula_id, curso_id)
+);
+
+CREATE TABLE IF NOT EXISTS matriculas (
     id BIGSERIAL PRIMARY KEY,
-
     aluno_id UUID NOT NULL,
-    aula_id BIGINT NOT NULL,
-
-    CONSTRAINT fk_matricula_aluno
-    FOREIGN KEY (aluno_id) REFERENCES alunos (id),
-
-    CONSTRAINT fk_matricula_aula
-    FOREIGN KEY (aula_id) REFERENCES aulas (id),
+    aula_id  BIGINT NOT NULL REFERENCES aulas(id),
 
     CONSTRAINT uk_aluno_aula UNIQUE (aluno_id, aula_id)
 );
-
-CREATE TABLE aula_cursos (
-    aula_id BIGINT NOT NULL,
-    curso_id BIGINT NOT NULL,
-
-    PRIMARY KEY (aula_id, curso_id),
-
-    CONSTRAINT fk_aula_curso_aula
-    FOREIGN KEY (aula_id) REFERENCES aulas (id)
-     ON DELETE CASCADE,
-
-    CONSTRAINT fk_aula_curso_curso
-    FOREIGN KEY (curso_id) REFERENCES cursos (id)
-);
-
-
