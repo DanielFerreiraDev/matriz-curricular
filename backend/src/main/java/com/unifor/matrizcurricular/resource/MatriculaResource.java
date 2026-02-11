@@ -6,25 +6,19 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
-
-import java.util.UUID;
 
 @Path("/matriculas")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MatriculaResource {
 
-    @Inject
-    MatriculaService service;
+    @Inject MatriculaService service;
 
     @POST
-    @Path("/{aulaId}")
-    @RolesAllowed("usuario")
+    @Path("/aula/{aulaId}")
+    @RolesAllowed("ALUNO")
     public Response matricular(@PathParam("aulaId") Long aulaId) {
-
         service.matricular(aulaId);
-
         return Response.status(Response.Status.CREATED).build();
     }
 }
