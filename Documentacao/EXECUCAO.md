@@ -12,8 +12,9 @@ Todo o ambiente (banco de dados, Keycloak, backend e frontend) é provisionado a
 
 - Docker (versão 20+)
 - Docker Compose (v2+)
+- Java 21
+- Maven 3.9.*
 
-> Não é necessário instalar Java, Node.js, Maven ou banco de dados localmente.
 
 ---
 
@@ -24,6 +25,8 @@ Antes de subir os containers, crie um arquivo `.env` na **raiz do projeto** (mat
 ```env
 KEYCLOAK_BACKEND_SECRET=CLIENT_SECRET_BACKEND
 ```
+
+**Por se tratar de um Desafio técnico o .env foi exposto no git para facilitar testes**
 
 ## 3 - Build da Aplicação
 
@@ -36,6 +39,7 @@ O Docker Compose irá:
 - Inicializar os schemas do banco 
 - Subir o Keycloak e importar automaticamente o Realm 
 - Subir o backend já integrado ao Keycloak
+- Subir o frontend já integrado ao Keycloak
 
 ## 4 - Serviços disponíveis
 
@@ -44,7 +48,13 @@ Após a inicialização, os serviços estarão disponíveis em:
   - Usuário: admin 
   - Senha: admin 
 - Backend API: http://localhost:8081
-- Frontend: http://localhost:4200
+- Frontend: http://localhost
+
+## 5 - Reset Total
+
+```docker compose down -v```
+
+```docker compose up -d --build```
 
 ## 5 - Usuários de Teste
 
@@ -60,7 +70,8 @@ Os seguintes usuários são importados automaticamente no Keycloak:
 
 O Realm, Clients, Roles e usuários são importados automaticamente via arquivo JSON. (ver [keycloak-setup.md](keycloak-setup.md). Seção Configuração automática)
 - O backend valida tokens JWT emitidos pelo Keycloak. 
-- O controle de acesso é feito por roles no backend. 
-- Caso seja necessário reiniciar o ambiente do zero, execute:
-  - ```docker compose down -v```
-  - Então build novamente a aplicação.
+- O controle de acesso é feito por roles no backend.
+
+## 7 - Teste e Validação
+
+- BACKEND: Para testes da API, visualizar documentação [API-TESTE.md](API-TESTE.md)

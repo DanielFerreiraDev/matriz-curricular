@@ -10,6 +10,10 @@ A documentação está organizada por responsabilidade, facilitando a reproduç�
   Passo a passo para subir o ambiente local com Docker.  
   → [EXECUCAO.md](EXECUCAO.md)
 
+- **Teste da API**  
+  Passo a passo para testar a api da aplicação.  
+  → [API-TESTE.md](API-TESTE.md)
+
 - **Configuração do Keycloak**  
   Detalhamento do Realm, Clients, Roles e usuários de teste e Importação automática da estrutura básica.  
   → [keycloak-setup.md](keycloak-setup.md)
