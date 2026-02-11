@@ -72,7 +72,6 @@ Excluir oferta de disciplina na matriz.
 
 ## 3. Endpoints do Aluno
 
-### Listar Aulas Disponíveis
 
 Realizar Matrícula
 
@@ -83,6 +82,7 @@ Inscreve o aluno em uma aula específica através do ID.
 - **Auth**: `Bearer <TOKEN_ALUNO>`
 
 Listar Minhas Matrículas
+
 Consulta as matrículas já realizadas pelo aluno autenticado.
 
 - **URL**: `GET http://localhost:8081/api/matriculas`

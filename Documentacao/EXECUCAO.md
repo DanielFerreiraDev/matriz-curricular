@@ -20,7 +20,30 @@ Todo o ambiente (banco de dados, Keycloak, backend e frontend) é provisionado a
 
 ## 2 - Configuração de Ambiente
 
-Antes de subir os containers, crie um arquivo `.env` na **raiz do projeto** (matriz-curricular) com o seguinte conteúdo:
+### Construção dos containers Docker
+
+- Foi feito o build das imagens do backend e frontend no DockerHub para melhorar a eficiência e segurança da construção dos containers.
+  - imagem backend docker: ```docker0599/matriz-curricular-backend:latest```
+  - imagem frontend docker: ```docker0599/matriz-curricular-frontend:latest```
+  
+Construção via Dockerfile local **(não necessário, somente para consulta)**:
+- Os arquivos Dockerfile de cada serviço continuará no projeto a fim de conhecimento, caso seja preciso realizar novamente essa construção local
+  - Backend: ```./backend/Dockerfile```
+  - Frontend: ```./frontend/apps/Dockerfile```
+    - No arquivo ```docker-compose.yml``` adicione no serviço.
+    ```
+    backend
+      build:
+      context: ./backend
+    ```
+    ``` 
+    frontend
+      build: 
+           context: ./frontend
+           dockerfile: apps/matrizcurricular/Dockerfile
+    ```
+
+Antes de subir os containers, o arquivo `.env` tem que existir na **raiz do projeto** (matriz-curricular) com o seguinte conteúdo:
 
 ```env
 KEYCLOAK_BACKEND_SECRET=CLIENT_SECRET_BACKEND
@@ -85,4 +108,4 @@ O Realm, Clients, Roles e usuários são importados automaticamente via arquivo 
 - Se atentar somente as versões requiridas das stacks
   - Exemplo:
     - backend: ```./mvnw quarkus:dev```
-    - frontend: ```npx nx serve matrizcurricular``` 
+    - frontend: ```npx nx serve matrizcurricular```

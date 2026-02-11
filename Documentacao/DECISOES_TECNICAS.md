@@ -5,6 +5,7 @@
 - Frontend: Angular + Nx
 - Autenticação: Keycloak
 - Banco de Dados: PostgreSQL
+- Integração: Docker
 
 ## Decisões Adotadas
 
@@ -47,6 +48,8 @@ conforme especificado no desafio, e são apenas consumidas pelo sistema.
 
 - Toda lógica do fluxo foi colocada no diretório services do backend afim de centralizar toda regra de negócio
 - No fluxo de edição aula da matriz curricular: Não é permitido editar aulas se tiverem alunos matriculados
+- Para melhoria no build dos containers foi feito o upload das imagens gerados pelos Dockerfilers no DockerHub, com isso,
+será feito a construção mais segura e eficiente.
 
 ### Possíveis Evoluções
 
