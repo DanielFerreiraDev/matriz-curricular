@@ -16,10 +16,10 @@ Para não ter que digitar -s em todo comando, você pode criar uma pasta chamada
 dentro dela, um arquivo de texto chamado maven.config. Adicione o seguinte conteúdo:
 
 ```text
---settings=settings_maven_default.xml
+--settings=settings_maven_example.xml
 ```
 
-O arquivo ```settings_maven_default.xml``` deve conter a estrutura básica para funcionamento correto e deve ser colocado
+O arquivo ```settings_maven_example.xml``` deve conter a estrutura básica para funcionamento correto e deve ser colocado
 na raiz do projeto backend.
 
 ```text
