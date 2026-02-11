@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+echo "Inicializando banco..."
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
     CREATE USER keycloak WITH PASSWORD 'keycloak';
@@ -19,3 +20,13 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "matrizcurricular" 
     CREATE SCHEMA IF NOT EXISTS matrizcurricular AUTHORIZATION postgres;
     ALTER ROLE postgres SET search_path TO matriz, public;
 EOSQL
+
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "matrizcurricular" \
+    -f /docker-entrypoint-initdb.d/sql/init.sql
+
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "matrizcurricular" \
+    -f /docker-entrypoint-initdb.d/sql/insert_default_registers.sql
+
+echo "Banco inicializado com sucesso!"
