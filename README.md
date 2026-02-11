@@ -4,6 +4,8 @@ Este repositório contém a implementação do desafio técnico para a vaga de *
 
 O objetivo do projeto é demonstrar boas práticas de desenvolvimento, organização de código, clareza de domínio, aderência à stack solicitada e facilidade de execução.
 
+Abaixo se encontra todas as informações de pré-requisitos, configuração, execução e testes do projeto. Tal como toda documentação necessária do que feito até o presente momento.
+
 ---
 
 ## Estrutura do Repositório
@@ -23,6 +25,20 @@ O objetivo do projeto é demonstrar boas práticas de desenvolvimento, organiza�
 ├── init-db.sh
 ├── README.md
 ```
+
+## Documentação
+
+Contém toda a documentação necessária para **entendimento**, **execução** e **testes do projeto**.
+[DOCUMENTACAO](Documentacao/README.md)
+
+Contém:
+
+- Pré-requisitos
+- Passo a passo de execução do projeto
+- Documentação da API (Markdown)
+- Descrição dos endpoints
+- Payloads de request e response
+- Diagramas e decisões técnicas adotadas
 
 ## Backend
 
@@ -54,18 +70,3 @@ Inclui os seguintes serviços:
 - Frontend (Angular)
 - Keycloak (autenticação e autorização)
 - Banco de dados PostgreSQL
-
-[//]: # (PRÓXIMO COMMIT DE DOC, SUBIR SEÇÃO E DANDO FOCO NELA)
-## Documentação
-
-Contém toda a documentação necessária para entendimento, execução e testes do projeto.
-
-Contém:
-
-- Pré-requisitos
-- Passo a passo de execução do projeto
-- Documentação da API (Swagger / OpenAPI ou Markdown)
-- Descrição dos endpoints
-- Payloads de request e response
-- Códigos de erro e status HTTP
-- Diagramas e decisões técnicas adotadas
