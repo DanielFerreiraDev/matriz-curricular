@@ -16,17 +16,16 @@ Ao ser adotado o Keycloak como provedor de identidade utilizando OAuth2 com Open
 - Uso nativo de `@RolesAllowed` no backend Quarkus
 - Redução de lógica customizada de autorização
 
-O client `backend` utiliza autenticação via **Client Credentials**, enquanto o `frontend` utiliza **Authorization Code Flow (PKCE)**.
-
-O secret do client backend é configurado via variável de ambiente (.env), seguindo boas práticas de segurança.
-
-Durante a integração em ambiente Docker, foi necessário ajustar a configuração de hostname do Keycloak para garantir consistência do `issuer` (`iss`) nos tokens JWT, evitando falhas de validação no backend.
-
+- O client `backend` utiliza autenticação via **Client Credentials**, enquanto o `frontend` utiliza **Authorization Code Flow (PKCE)**.
+- O secret do client backend é configurado via variável de ambiente (.env), seguindo boas práticas de segurança.
+- Durante a integração em ambiente Docker, foi necessário ajustar a configuração de hostname do Keycloak para garantir consistência do `issuer` (`iss`) nos tokens JWT, evitando falhas de validação no backend.
+- Para validar cursos associados aos usuários (alunos), foi criado um novo atributo de usuário: ```cursoId``` 
+para que seja consumido pelo backend e assim validar se a aula está autorizada para o curso do aluno. 
+- Foi necessário associar um client scope com esse atributo de usuário para os clients da aplicação 
 
 ### Backend
 
 - O backend consome o sub do JWT como identificador do usuário e usa esse valor como chave primária nas entidades acadêmicas, garantindo desacoplamento entre autenticação e domínio.
-
 
 ### Frontend
 
