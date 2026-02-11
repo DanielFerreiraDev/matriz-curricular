@@ -3,11 +3,11 @@ import { Route } from '@angular/router';
 export const appRoutes: Route[] = [
   {
     path: '',
-    redirectTo: 'products',
+    redirectTo: 'matriculas',
     pathMatch: 'full',
   },
   {
-    path: 'products',
+    path: 'matriculas',
     loadChildren: () =>
       import('@org/shop/feature-products').then((m) => m.featureProductsRoutes),
   },
