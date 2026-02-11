@@ -34,7 +34,8 @@ para que seja consumido pelo backend e assim validar se a aula está autorizada 
 
 O frontend utiliza autenticação baseada em token (OAuth2/OIDC).
 - O logout foi implementado de forma explícita limpando tokens locais e invalidando a sessão quando existente, evitando auto-login silencioso e garantindo previsibilidade do fluxo.
-
+- A implementação da integração do frontend com o back não foi possível por questão de tempo, então foi priorizado o fluxo de Login e Logout.
+Deixando a visualização da tela limpa de todas as informações não necessárias no momento.
 
 ### Banco de dados
 

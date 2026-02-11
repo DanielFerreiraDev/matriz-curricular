@@ -48,7 +48,7 @@ Após a inicialização, os serviços estarão disponíveis em:
   - Usuário: admin 
   - Senha: admin 
 - Backend API: http://localhost:8081
-- Frontend: http://localhost
+- Frontend: http://localhost ou http://localhost:4200 (rodar local)
 
 ## 5 - Reset Total
 
@@ -75,3 +75,14 @@ O Realm, Clients, Roles e usuários são importados automaticamente via arquivo 
 ## 7 - Teste e Validação
 
 - BACKEND: Para testes da API, visualizar documentação [API-TESTE.md](API-TESTE.md)
+- FRONTEND: Para validar fluxo de login e logout acessar serviço disponível em:
+  - http://localhost
+  - http://localhost:4200
+
+## 8 - Testes Rodando Localmente
+
+- Para ser feito debugger dos serviços backend e frontend, você pode seguir as documentações padrões de execução.
+- Se atentar somente as versões requiridas das stacks
+  - Exemplo:
+    - backend: ```./mvnw quarkus:dev```
+    - frontend: ```npx nx serve matrizcurricular``` 
