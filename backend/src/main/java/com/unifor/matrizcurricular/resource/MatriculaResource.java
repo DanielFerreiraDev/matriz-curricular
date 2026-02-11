@@ -7,12 +7,21 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
+import java.util.Map;
+
 @Path("/matriculas")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MatriculaResource {
 
     @Inject MatriculaService service;
+
+    @GET
+    @RolesAllowed("ALUNO")
+    public List<Map> minhas() {
+        return service.listar();
+    }
 
     @POST
     @Path("/aula/{aulaId}")

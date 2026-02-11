@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import jakarta.json.JsonNumber;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -69,6 +71,30 @@ public class MatriculaService {
         m.persist();
 
         aula.vagasOcupadas++;
+    }
+
+    public List<Map> listar() {
+        UUID alunoId = UUID.fromString(jwt.getSubject());
+
+        return em.createQuery("""
+            select new map(
+              m.id as matriculaId,
+              a.id as aulaId,
+              d.nome as disciplina,
+              p.nome as professor,
+              h.diaSemana as diaSemana,
+              h.inicio as inicio,
+              h.fim as fim
+            )
+            from Matricula m
+            join m.aula a
+            join a.disciplina d
+            join a.professor p
+            join a.horario h
+            where m.alunoId = :alunoId
+            """, Map.class)
+                .setParameter("alunoId", alunoId)
+                .getResultList();
     }
 
     private boolean existeConflitoHorario(UUID alunoId, Long novoHorarioId) {
