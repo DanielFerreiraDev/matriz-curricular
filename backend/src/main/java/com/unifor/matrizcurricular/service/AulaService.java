@@ -2,6 +2,7 @@ package com.unifor.matrizcurricular.service;
 
 import com.unifor.matrizcurricular.api.dto.AulaCreateRequestDTO;
 import com.unifor.matrizcurricular.api.dto.AulaResponseDTO;
+import com.unifor.matrizcurricular.api.dto.AulaUpdateRequestDTO;
 import com.unifor.matrizcurricular.domain.*;
 import com.unifor.matrizcurricular.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -76,6 +78,83 @@ public class AulaService {
         return aula;
     }
 
+    @Transactional
+    public Aula atualizar(Long aulaId, AulaUpdateRequestDTO req) {
+        UUID coordenadorId = UUID.fromString(jwt.getSubject());
+
+
+        Aula aula = Aula.findById(aulaId);
+        if (aula == null || !aula.ativa) throw new BusinessException("Aula não encontrada");
+
+        if (!aula.coordenadorId.equals(coordenadorId)) {
+            throw new BusinessException("Acesso negado para esta aula");
+        }
+
+        if (req.professorId != null) {
+            Professor p = Professor.findById(req.professorId);
+            if (p == null) throw new BusinessException("Professor não encontrado");
+            aula.professor = p;
+        }
+
+        if (req.disciplinaId != null) {
+            Disciplina d = Disciplina.findById(req.disciplinaId);
+            if (d == null) throw new BusinessException("Disciplina não encontrada");
+            aula.disciplina = d;
+        }
+
+        if (req.horarioId != null) {
+            Horario h = Horario.findById(req.horarioId);
+            if (h == null) throw new BusinessException("Horário não encontrado");
+
+            // Disciplina pode repetir, mas não no mesmo horário
+            long existe = Aula.count("disciplina.id = ?1 and horario.id = ?2 and ativa = true and id <> ?3",
+                    aula.disciplina.id, req.horarioId, aulaId);
+            if (existe > 0) throw new BusinessException("Já existe oferta dessa disciplina nesse horário");
+
+            aula.horario = h;
+        }
+
+        if (req.cursosAutorizadosIds != null) {
+            long matriculasCount = Matricula.count("aula.id", aulaId);
+            if (matriculasCount > 0) {
+                throw new BusinessException("Não é permitido alterar cursos autorizados com alunos matriculados");
+            }
+
+            em.createQuery("delete from AulaCurso ac where ac.aula.id = :aulaId")
+                    .setParameter("aulaId", aulaId)
+                    .executeUpdate();
+
+            for (Long cursoId : req.cursosAutorizadosIds) {
+                Curso c = Curso.findById(cursoId);
+                if (c == null) throw new BusinessException("Curso não encontrado: " + cursoId);
+
+                AulaCurso ac = new AulaCurso();
+                ac.aula = aula;
+                ac.curso = c;
+                ac.persist();
+            }
+        }
+        aula.persist();
+        return aula;
+    }
+
+    @Transactional
+    public void excluir(Long aulaId) {
+        UUID coordenadorId = UUID.fromString(jwt.getSubject());
+
+        Aula aula = Aula.findById(aulaId);
+        if (aula == null) throw new BusinessException("Aula não encontrada");
+
+        if (!aula.coordenadorId.equals(coordenadorId)) {
+            throw new BusinessException("Acesso negado para esta aula");
+        }
+
+        long matriculas = Matricula.count("aula.id", aulaId);
+        if (matriculas > 0) throw new BusinessException("Não é permitido excluir aula com alunos matriculados");
+
+        aula.delete();
+    }
+
     public AulaResponseDTO toResponse(Aula aula) {
         AulaResponseDTO r = new AulaResponseDTO();
         r.id = aula.id;
@@ -101,6 +180,7 @@ public class AulaService {
         r.cursosAutorizadosIds = cursosIds;
         return r;
     }
+
     private List<Long> cursosAutorizadosIds(Long aulaId) {
         return em.createQuery(
                 "select ac.curso.id from AulaCurso ac where ac.aula.id = :aulaId",

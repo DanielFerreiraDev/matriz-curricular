@@ -1,6 +1,7 @@
 package com.unifor.matrizcurricular.resource;
 
 import com.unifor.matrizcurricular.api.dto.AulaCreateRequestDTO;
+import com.unifor.matrizcurricular.api.dto.AulaUpdateRequestDTO;
 import com.unifor.matrizcurricular.domain.Aula;
 import com.unifor.matrizcurricular.service.AulaService;
 import jakarta.annotation.security.RolesAllowed;
@@ -21,6 +22,24 @@ public class AulaResource {
     public Response criar(AulaCreateRequestDTO req) {
         Aula aula = service.criarAula(req);
         return Response.status(Response.Status.CREATED).entity(service.toResponse(aula)).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @RolesAllowed("COORDENADOR")
+    public Response atualizar(@PathParam("id") Long id, AulaUpdateRequestDTO req) {
+
+        Aula aula = service.atualizar(id, req);
+        return Response.ok(service.toResponse(aula)).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @RolesAllowed("COORDENADOR")
+    public Response excluir(@PathParam("id") Long id) {
+
+        service.excluir(id);
+        return Response.noContent().build();
     }
 
 }
