@@ -1,6 +1,7 @@
 package com.unifor.matrizcurricular.service;
 
 import com.unifor.matrizcurricular.api.dto.AulaCreateRequestDTO;
+import com.unifor.matrizcurricular.api.dto.AulaFiltroParameters;
 import com.unifor.matrizcurricular.api.dto.AulaResponseDTO;
 import com.unifor.matrizcurricular.api.dto.AulaUpdateRequestDTO;
 import com.unifor.matrizcurricular.domain.*;
@@ -8,11 +9,12 @@ import com.unifor.matrizcurricular.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -23,6 +25,80 @@ public class AulaService {
 
     @Inject
     JsonWebToken jwt;
+
+    public List<AulaResponseDTO> listarAulasDoCoordenador(AulaFiltroParameters aulaFiltroParameters) {
+        UUID coordenadorId = UUID.fromString(jwt.getSubject());
+
+        StringBuilder jpql = getStringBuilder(aulaFiltroParameters);
+
+        TypedQuery<Aula> q = em.createQuery(jpql.toString(), Aula.class);
+        q.setParameter("coordId", coordenadorId);
+
+        if (aulaFiltroParameters.diaSemana != null && !aulaFiltroParameters.diaSemana.isBlank()) q.setParameter("diaSemana", aulaFiltroParameters.diaSemana);
+        if (aulaFiltroParameters.inicio != null && !aulaFiltroParameters.inicio.isBlank()) q.setParameter("inicio", LocalTime.parse(aulaFiltroParameters.inicio));
+        if (aulaFiltroParameters.fim != null && !aulaFiltroParameters.fim.isBlank()) q.setParameter("fim", LocalTime.parse(aulaFiltroParameters.fim));
+
+        if (aulaFiltroParameters.periodo != null && !aulaFiltroParameters.periodo.isBlank()) {
+            String p = aulaFiltroParameters.periodo.toUpperCase();
+            if (p.equals("MANHA") || p.equals("TARDE")) q.setParameter("p12", LocalTime.of(12, 0));
+            if (p.equals("TARDE") || p.equals("NOITE")) q.setParameter("p18", LocalTime.of(18, 0));
+        }
+
+        if (aulaFiltroParameters.vagasMaximas != null) q.setParameter("vagasMaximas", aulaFiltroParameters.vagasMaximas);
+        if (aulaFiltroParameters.cursoListIds != null && !aulaFiltroParameters.cursoListIds.isEmpty()) q.setParameter("cursoListIds", aulaFiltroParameters.cursoListIds);
+
+        List<Aula> aulas = q.getResultList();
+
+        return aulas.stream().map(this::toResponse).toList();
+    }
+
+    private static StringBuilder getStringBuilder(AulaFiltroParameters f) {
+        StringBuilder jpql = new StringBuilder("""
+            select distinct a
+            from Aula a
+            join fetch a.disciplina d
+            join fetch a.professor p
+            join fetch a.horario h
+            where a.ativa = true
+              and a.coordenadorId = :coordId
+        """);
+
+        if (f.diaSemana != null && !f.diaSemana.isBlank()) {
+            jpql.append(" and h.diaSemana = :diaSemana ");
+        }
+
+        if (f.inicio != null && !f.inicio.isBlank()) {
+            jpql.append(" and h.inicio >= :inicio ");
+        }
+
+        if (f.fim != null && !f.fim.isBlank()) {
+            jpql.append(" and h.fim <= :fim ");
+        }
+
+        if (f.periodo != null && !f.periodo.isBlank()) {
+            jpql.append(" and ");
+            switch (f.periodo.toUpperCase()) {
+                case "MANHA" -> jpql.append(" h.inicio < :p12 ");
+                case "TARDE" -> jpql.append(" h.inicio >= :p12 and h.inicio < :p18 ");
+                case "NOITE" -> jpql.append(" h.inicio >= :p18 ");
+                default -> { }
+            }
+        }
+
+        if (f.vagasMaximas != null) {
+            jpql.append(" and a.vagasMaximas = :vagasMaximas ");
+        }
+
+        if (f.cursoListIds != null && !f.cursoListIds.isEmpty()) {
+            jpql.append("""
+              and exists (
+                select 1 from AulaCurso ac
+                where ac.aula.id = a.id and ac.curso.id in :cursoListIds
+              )
+            """);
+        }
+        return jpql;
+    }
 
     @Transactional
     public Aula criarAula(AulaCreateRequestDTO requestDTO) {
@@ -175,9 +251,7 @@ public class AulaService {
 
         r.ativa = aula.ativa;
 
-        List<Long> cursosIds = cursosAutorizadosIds(aula.id);
-
-        r.cursosAutorizadosIds = cursosIds;
+        r.cursosAutorizadosIds = cursosAutorizadosIds(aula.id);
         return r;
     }
 
