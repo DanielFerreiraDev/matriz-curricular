@@ -27,6 +27,19 @@ Para interagir com os endpoints protegidos, é necessário obter o token de aces
 
 ---
 
+## 2. Endpoint Catálogo
+
+### Buscar catálogo
+Lista as entidades pré-cadastradas do sistema:
+
+- **URL**: `GET http://localhost:8081/api/catalogo/disciplinas`
+- **URL**: `GET http://localhost:8081/api/catalogo/horarios`
+- **URL**: `GET http://localhost:8081/api/catalogo/cursos`
+- **URL**: `GET http://localhost:8081/api/catalogo/professores`
+
+- **Auth**: `Bearer <TOKEN_ALUNO>`
+
+
 ## 2. Endpoints do Coordenador
 
 ### Criar Aula
