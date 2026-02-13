@@ -8,6 +8,7 @@ import com.unifor.matrizcurricular.domain.*;
 import com.unifor.matrizcurricular.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.json.JsonNumber;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -48,6 +49,42 @@ public class AulaService {
         if (aulaFiltroParameters.cursoListIds != null && !aulaFiltroParameters.cursoListIds.isEmpty()) q.setParameter("cursoListIds", aulaFiltroParameters.cursoListIds);
 
         List<Aula> aulas = q.getResultList();
+
+        return aulas.stream().map(this::toResponse).toList();
+    }
+
+    public List<AulaResponseDTO> listarAulasDisponiveisAluno() {
+        UUID alunoId = UUID.fromString(jwt.getSubject());
+        Object claim = jwt.getClaim("cursoId");
+
+        Long cursoId = switch (claim) {
+            case JsonNumber jsonNumber -> jsonNumber.longValue();
+            case Number number -> number.longValue();
+            case String ignored -> Long.valueOf(claim.toString());
+            case null, default -> throw new BusinessException("Token sem claim cursoId (configure no Keycloak)");
+        };
+
+        List<Aula> aulas = em.createQuery("""
+            select distinct a
+            from Aula a
+            join fetch a.disciplina
+            join fetch a.professor
+            join fetch a.horario h
+            where a.ativa = true
+              and a.vagasOcupadas < a.vagasMaximas
+              and exists (
+                  select 1 from AulaCurso ac
+                  where ac.aula.id = a.id and ac.curso.id = :cursoId
+              )
+              and not exists (
+                  select 1 from Matricula m
+                  where m.alunoId = :alunoId and m.aula.id = a.id
+              )
+            order by h.diaSemana, h.inicio
+        """, Aula.class)
+                .setParameter("cursoId", cursoId)
+                .setParameter("alunoId", alunoId)
+                .getResultList();
 
         return aulas.stream().map(this::toResponse).toList();
     }

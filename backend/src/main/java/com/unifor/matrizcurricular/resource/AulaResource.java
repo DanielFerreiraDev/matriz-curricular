@@ -42,6 +42,13 @@ public class AulaResource {
         return service.listarAulasDoCoordenador(aulaFiltroParameters);
     }
 
+    @GET
+    @Path("/disponiveis")
+    @RolesAllowed("ALUNO")
+    public List<AulaResponseDTO> disponiveis() {
+        return service.listarAulasDisponiveisAluno();
+    }
+
     @POST
     @RolesAllowed("COORDENADOR")
     public Response criar(AulaCreateRequestDTO req) {
