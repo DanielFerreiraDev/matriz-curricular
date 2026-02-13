@@ -46,6 +46,16 @@ Cria uma nova oferta de disciplina na matriz.
 }
 ```
 
+### Buscar Aulas
+Faz a listagem das aulas de acordo com filtros passados no PathParam.
+- **URL default:** `GET http://localhost:8081/api/aulas?inicio=?&fim=?&cursoIds=?&cursoIds=?&periodo=?&diaSemana=?&vagasMaximas=?`
+- **Auth:** `Bearer <TOKEN_COORDENADOR>`
+
+- Exemplo:
+- `http://localhost:8081/api/aulas?inicio=00:00&fim=23:59&cursoIds=4&cursoIds=2&periodo=noite&diaSemana=TUESDAY&vagasMaximas=40`
+- Caso não seja passado filtros de busca será retornado todos os cursos criados pelo coordenador
+- `http://localhost:8081/api/aulas`
+
 ### Editar Aula
 Editar oferta de disciplina na matriz.
 
