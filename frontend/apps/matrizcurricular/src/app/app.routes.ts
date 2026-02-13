@@ -1,25 +1,21 @@
 import { Route } from '@angular/router';
+import { roleGuard } from '../../../../core-auth/src/lib/role.guard';
 
 export const appRoutes: Route[] = [
+  { path: '', redirectTo: 'aluno', pathMatch: 'full' },
+
   {
-    path: '',
-    redirectTo: 'matriculas',
-    pathMatch: 'full',
-  },
-  {
-    path: 'matriculas',
+    path: 'coordenador',
+    canMatch: [roleGuard('COORDENADOR')],
     loadChildren: () =>
-      import('@org/shop/feature-products').then((m) => m.featureProductsRoutes),
+      import('@org/feature-coordenador').then((m) => m.featureCoordenadorRoutes),
   },
   {
-    path: 'products',
+    path: 'aluno',
+    canMatch: [roleGuard('ALUNO')],
     loadChildren: () =>
-      import('@org/shop/feature-product-detail').then(
-        (m) => m.featureProductDetailRoutes,
-      ),
+      import('@org/feature-aluno').then((m) => m.featureAlunoRoutes),
   },
-  {
-    path: '**',
-    redirectTo: 'products',
-  },
+
+  { path: '**', redirectTo: 'aluno' },
 ];
