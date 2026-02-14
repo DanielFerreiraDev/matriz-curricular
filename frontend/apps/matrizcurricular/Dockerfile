@@ -1,9 +1,9 @@
 # Estágio 1: Build
-FROM node:20.20.0-alpine AS builder
+FROM node:20.20.0-bookworm-slim AS builder
 WORKDIR /app
 
-COPY ../../package*.json ./
-RUN npm install
+RUN npm config set registry https://registry.npmjs.org/
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
 RUN npm ci
 
 COPY . .

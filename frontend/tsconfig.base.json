@@ -24,7 +24,12 @@
       "@org/shop/feature-products": ["libs/shop/feature-products/src/index.ts"],
       "@org/shop/shared-ui": ["libs/shop/shared-ui/src/index.ts"],
       "@org/core-auth": ["core-auth/src/index.ts"],
-      "@org/core-api": ["core-api/src/index.ts"]
+      "@org/core-api": ["core-api/src/index.ts"],
+      "@org/feature-coordenador": [
+        "libs/matrizcurricular/coordenador/src/index.ts"
+      ],
+      "@org/feature-aluno": ["libs/matrizcurricular/aluno/src/index.ts"],
+      "@org/data-access": ["libs/matrizcurricular/data-access/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
