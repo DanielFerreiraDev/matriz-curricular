@@ -60,7 +60,7 @@ public class AulaService {
         Long cursoId = switch (claim) {
             case JsonNumber jsonNumber -> jsonNumber.longValue();
             case Number number -> number.longValue();
-            case String ignored -> Long.valueOf(claim.toString());
+            case String s -> Long.valueOf(s.trim());
             case null, default -> throw new BusinessException("Token sem claim cursoId (configure no Keycloak)");
         };
 
@@ -96,8 +96,7 @@ public class AulaService {
             join fetch a.disciplina d
             join fetch a.professor p
             join fetch a.horario h
-            where a.ativa = true
-              and a.coordenadorId = :coordId
+            where a.coordenadorId = :coordId
         """);
 
         if (f.diaSemana != null && !f.diaSemana.isBlank()) {
@@ -265,7 +264,7 @@ public class AulaService {
         long matriculas = Matricula.count("aula.id", aulaId);
         if (matriculas > 0) throw new BusinessException("Não é permitido excluir aula com alunos matriculados");
 
-        aula.delete();
+        aula.ativa = false;
     }
 
     public AulaResponseDTO toResponse(Aula aula) {
