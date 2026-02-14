@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AulaCreateRequest, AulaResponse, MinhaMatricula } from './api';
+import {AulaCreateRequest, AulaResponse, AulaUpdateRequest, MinhaMatricula} from './api';
 import {environment} from "./environment";
 
 @Injectable({ providedIn: 'root' })
@@ -16,6 +16,14 @@ export class MatrizService {
 
   listarAulasCoordenador() {
     return this.http.get<AulaResponse[]>(`${this.baseUrl}/api/aulas`);
+  }
+
+  editarAula(aulaId: number, body: AulaUpdateRequest) {
+    return this.http.put<AulaResponse>(`${this.baseUrl}/api/aulas/${aulaId}`, body);
+  }
+
+  excluirAula(aulaId: number) {
+    return this.http.delete<void>(`${this.baseUrl}/api/aulas/${aulaId}`);
   }
 
   // ALUNO

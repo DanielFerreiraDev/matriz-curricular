@@ -9,7 +9,7 @@ import {
   CatalogoItem,
   HorarioItem,
   AulaCreateRequest,
-  AulaResponse,
+  AulaResponse, AulaUpdateRequest,
 } from '@org/data-access';
 
 @Component({
@@ -77,18 +77,74 @@ import {
 
         <table border="1" cellpadding="6" cellspacing="0" style="width:100%; margin-top:10px;">
           <tr>
-            <th>ID</th><th>Disciplina</th><th>Professor</th><th>Dia</th><th>Início</th><th>Fim</th><th>Vagas</th><th>Ativa</th>
+            <th>ID</th><th>Disciplina</th><th>Professor</th><th>Dia</th><th>Início</th><th>Fim</th><th>Vagas</th><th>Ativa</th><th>Ações</th>
           </tr>
-          <tr *ngFor="let a of aulas">
-            <td>{{ a.id }}</td>
-            <td>{{ a.disciplinaNome }}</td>
-            <td>{{ a.professorNome }}</td>
-            <td>{{ a.diaSemana }}</td>
-            <td>{{ a.inicio }}</td>
-            <td>{{ a.fim }}</td>
-            <td>{{ a.vagasOcupadas }}/{{ a.vagasMaximas }}</td>
-            <td>{{ a.ativa ? 'Sim' : 'Não' }}</td>
-          </tr>
+          <ng-container *ngFor="let a of aulas">
+            <tr>
+              <td>{{ a.id }}</td>
+              <td>{{ a.disciplinaNome }}</td>
+              <td>{{ a.professorNome }}</td>
+              <td>{{ a.diaSemana }}</td>
+              <td>{{ a.inicio }}</td>
+              <td>{{ a.fim }}</td>
+              <td>{{ a.vagasOcupadas }}/{{ a.vagasMaximas }}</td>
+              <td>{{ a.ativa ? 'Sim' : 'Não' }}</td>
+
+              <td>
+                <ng-container *ngIf="a.ativa; else aulaDesativada">
+                  <button (click)="iniciarEdicao(a)">Editar</button>
+                  <button (click)="excluir(a.id)">Desativar</button>
+                </ng-container>
+
+                <ng-template #aulaDesativada>
+                  <span style="color: #999; font-weight: 600;">Desativada</span>
+                </ng-template>
+              </td>
+            </tr>
+
+            <tr *ngIf="editandoId === a.id">
+              <td colspan="9">
+                <div style="display:grid; gap:10px; padding:10px; border:1px solid #666; border-radius:10px;">
+                  <b>Editando aula {{ a.id }}</b>
+
+                  <label>
+                    Professor
+                    <select [(ngModel)]="editForm.professorId">
+                      <option *ngFor="let p of professores" [ngValue]="p.id">{{ p.nome }}</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Horário
+                    <select [(ngModel)]="editForm.horarioId">
+                      <option *ngFor="let h of horarios" [ngValue]="h.id">
+                        {{ h.diaSemana }} {{ h.inicio }}-{{ h.fim }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <div>
+                    <div><b>Cursos autorizados</b></div>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+                      <label *ngFor="let c of cursos" style="border:1px solid #666; padding:6px 8px; border-radius:8px;">
+                        <input
+                          type="checkbox"
+                          [checked]="editForm.cursosAutorizadosIds.includes(c.id)"
+                          (change)="toggleCursoEdicao(c.id)"
+                        />
+                        {{ c.nome }}
+                      </label>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap:8px;">
+                    <button (click)="salvarEdicao(a.id)">Salvar</button>
+                    <button (click)="cancelarEdicao()">Cancelar</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
         </table>
       </div>
     </section>
@@ -112,6 +168,15 @@ export class CoordenadorPageComponent implements OnInit {
     vagasMaximas: 40,
     cursosAutorizadosIds: [],
   };
+  editandoId: number | null = null;
+  editForm: AulaUpdateRequest = {
+    disciplinaId: 0,
+    professorId: 0,
+    horarioId: 0,
+    vagasMaximas: 40,
+    cursosAutorizadosIds: [],
+  };
+
 
   constructor(private catalog: CatalogService, private matriz: MatrizService) {}
 
@@ -162,6 +227,62 @@ export class CoordenadorPageComponent implements OnInit {
   carregarAulas() {
     this.matriz.listarAulasCoordenador().subscribe({
       next: (a) => (this.aulas = a),
+      error: (e) => (this.msg = this.errMsg(e)),
+    });
+  }
+
+  iniciarEdicao(a: AulaResponse) {
+    this.msg = '';
+    this.editandoId = a.id;
+
+    this.editForm = {
+      disciplinaId: a.disciplinaId,
+      professorId: a.professorId,
+      horarioId: this.horarios[0]?.id ?? 0,
+      vagasMaximas: this.horarios[0]?.id ?? 0,
+      cursosAutorizadosIds: [...(a.cursosAutorizadosIds ?? [])],
+    };
+
+  }
+
+  cancelarEdicao() {
+    this.editandoId = null;
+  }
+
+  toggleCursoEdicao(id: number) {
+    const set = new Set(this.editForm.cursosAutorizadosIds);
+    set.has(id) ? set.delete(id) : set.add(id);
+    this.editForm.cursosAutorizadosIds = Array.from(set);
+  }
+
+  salvarEdicao(aulaId: number) {
+    this.msg = '';
+
+    if (!this.editForm.cursosAutorizadosIds.length) {
+      this.msg = 'Selecione ao menos 1 curso autorizado.';
+      return;
+    }
+
+    this.matriz.editarAula(aulaId, this.editForm).subscribe({
+      next: () => {
+        this.msg = 'Aula atualizada!';
+        this.cancelarEdicao();
+      },
+      error: (e) => (this.msg = this.errMsg(e)),
+    });
+    this.carregarAulas();
+  }
+
+  excluir(aulaId: number) {
+    this.msg = '';
+    const ok = confirm('Desativar esta aula? (não permitido se houver matrículas)');
+    if (!ok) return;
+
+    this.matriz.excluirAula(aulaId).subscribe({
+      next: () => {
+        this.msg = 'Aula desativada!';
+        this.carregarAulas();
+      },
       error: (e) => (this.msg = this.errMsg(e)),
     });
   }
