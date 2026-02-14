@@ -1,5 +1,6 @@
 package com.unifor.matrizcurricular.api.dto;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 public class AulaResponseDTO {
@@ -12,7 +13,7 @@ public class AulaResponseDTO {
     public String professorNome;
 
     public Long horarioId;
-    public String diaSemana;
+    public DayOfWeek diaSemana;
     public String inicio;
     public String fim;
 

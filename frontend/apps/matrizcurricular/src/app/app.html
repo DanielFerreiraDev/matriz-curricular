@@ -2,17 +2,21 @@
   <div class="container">
     <h1>{{ title }}</h1>
     <nav>
+      <a *ngIf="isAluno" routerLink="/aluno">Aluno</a>
+      <a *ngIf="isCoord" routerLink="/coordenador">Coordenador</a>
       <button class="logout-btn" (click)="logout()">Logout</button>
     </nav>
   </div>
 </header>
 
 <main class="app-main">
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
 </main>
 
 <footer class="app-footer">
   <div class="container">
-    <p>© 2026 Gerenciamento de Matrículas Unifor</p>
-    <p>v1.0.0</p>
+    <p>© 2026 Gerenciamento de Matrículas Unifor (v1.1.0)</p>
   </div>
 </footer>

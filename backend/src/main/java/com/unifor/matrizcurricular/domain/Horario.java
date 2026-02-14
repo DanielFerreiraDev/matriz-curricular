@@ -3,6 +3,7 @@ package com.unifor.matrizcurricular.domain;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -13,8 +14,9 @@ public class Horario extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(name = "dia_semana", nullable = false)
-    public String diaSemana; // MONDAY...
+    @Enumerated(EnumType.STRING)
+    @Column(name = "dia_semana", nullable = false, length = 10)
+    public DayOfWeek diaSemana;
 
     @Column(nullable = false)
     public LocalTime inicio;

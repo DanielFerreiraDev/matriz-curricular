@@ -101,6 +101,8 @@ O Realm, Clients, Roles e usuários são importados automaticamente via arquivo 
 - FRONTEND: Para validar fluxo de login e logout acessar serviço disponível em:
   - http://localhost
   - http://localhost:4200
+- Para execução de testes no frontend, sempre utilizar os botões de atualizar por conta de não ter sido finalizado um fluxo de chamadas reativas
+  - Tanto o botão de menu do coordenador quanto os botões de funcionalidade
 
 ## 8 - Testes Rodando Localmente
 
