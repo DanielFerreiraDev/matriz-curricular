@@ -55,4 +55,9 @@ será feito a construção mais segura e eficiente.
 
 - migration das tabelas do banco para se tornar mais escalável.
 - Melhorar fluxo de edição das Aulas.
+- Refatoração de métodos
+- Pensar em utilizar respositories pra consultas sql
+- Melhorar design das telas 
+- Melhorar fluxo de UI do usuário
+- Implementar mensagens de erro ao ser lançado exceções nas requisições
 
