@@ -173,7 +173,6 @@ export class CoordenadorPageComponent implements OnInit {
     disciplinaId: 0,
     professorId: 0,
     horarioId: 0,
-    vagasMaximas: 40,
     cursosAutorizadosIds: [],
   };
 
@@ -238,8 +237,7 @@ export class CoordenadorPageComponent implements OnInit {
     this.editForm = {
       disciplinaId: a.disciplinaId,
       professorId: a.professorId,
-      horarioId: this.horarios[0]?.id ?? 0,
-      vagasMaximas: this.horarios[0]?.id ?? 0,
+      horarioId: a.horarioId,
       cursosAutorizadosIds: [...(a.cursosAutorizadosIds ?? [])],
     };
 
