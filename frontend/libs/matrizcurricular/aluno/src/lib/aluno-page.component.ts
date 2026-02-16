@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import {Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatrizService, AulaResponse, MinhaMatricula, AuthFacadeService } from '@org/data-access';
@@ -65,7 +65,7 @@ export class AlunoPageComponent implements OnInit {
   minhas: MinhaMatricula[] = [];
   cursoId?: number;
 
-  constructor(private matriz: MatrizService, private auth: AuthFacadeService) {}
+  constructor(private matriz: MatrizService, private auth: AuthFacadeService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.cursoId = this.auth.cursoId();
@@ -76,15 +76,27 @@ export class AlunoPageComponent implements OnInit {
   carregarDisponiveis() {
     this.msg = '';
     this.matriz.listarDisponiveis().subscribe({
-      next: (a) => (this.disponiveis = a),
-      error: (e) => (this.msg = this.errMsg(e)),
+      next: (a) => {
+        this.disponiveis = a;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
   }
 
   carregarMinhas() {
     this.matriz.minhasMatriculas().subscribe({
-      next: (m) => (this.minhas = m),
-      error: (e) => (this.msg = this.errMsg(e)),
+      next: (m) => {
+        this.minhas = m;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -96,7 +108,10 @@ export class AlunoPageComponent implements OnInit {
         this.carregarDisponiveis();
         this.carregarMinhas();
       },
-      error: (e) => (this.msg = this.errMsg(e)),
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
   }
 
