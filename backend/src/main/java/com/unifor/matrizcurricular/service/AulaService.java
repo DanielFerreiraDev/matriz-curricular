@@ -229,7 +229,7 @@ public class AulaService {
         if (req.cursosAutorizadosIds != null) {
             long matriculasCount = Matricula.count("aula.id", aulaId);
             if (matriculasCount > 0) {
-                throw new BusinessException("Não é permitido alterar cursos autorizados com alunos matriculados");
+                throw new BusinessException("Não é permitido alterar aulas com alunos matriculados");
             }
 
             em.createQuery("delete from AulaCurso ac where ac.aula.id = :aulaId")

@@ -26,22 +26,7 @@ Todo o ambiente (banco de dados, Keycloak, backend e frontend) é provisionado a
   - imagem backend docker: ```docker0599/matriz-curricular-backend:latest```
   - imagem frontend docker: ```docker0599/matriz-curricular-frontend:latest```
   
-Construção via Dockerfile local **(não necessário, somente para consulta)**:
-- Os arquivos Dockerfile de cada serviço continuará no projeto a fim de conhecimento, caso seja preciso realizar novamente essa construção local
-  - Backend: ```./backend/Dockerfile```
-  - Frontend: ```./frontend/apps/Dockerfile```
-    - No arquivo ```docker-compose.yml``` adicione no serviço.
-    ```
-    backend
-      build:
-      context: ./backend
-    ```
-    ``` 
-    frontend
-      build: 
-           context: ./frontend
-           dockerfile: apps/matrizcurricular/Dockerfile
-    ```
+- Para melhor entendimento do processo de construção dessas imagens, veja a seção [docker-build-images.md](docker-build-images.md) da Documentação
 
 Antes de subir os containers, o arquivo `.env` tem que existir na **raiz do projeto** (matriz-curricular) com o seguinte conteúdo:
 
@@ -101,8 +86,7 @@ O Realm, Clients, Roles e usuários são importados automaticamente via arquivo 
 - FRONTEND: Para validar fluxo de login e logout acessar serviço disponível em:
   - http://localhost
   - http://localhost:4200
-- Para execução de testes no frontend, sempre utilizar os botões de atualizar por conta de não ter sido finalizado um fluxo de chamadas reativas
-  - Tanto o botão de menu do coordenador quanto os botões de funcionalidade
+- Para execução de testes no frontend, foi realizado melhorias na renderição das telas juntamente com melhorias na visualização de erros.
 
 ## 8 - Testes Rodando Localmente
 

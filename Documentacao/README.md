@@ -14,6 +14,10 @@ A documentação está organizada por responsabilidade, facilitando a reproduç�
   Passo a passo para testar a api da aplicação.  
   → [API-TESTE.md](API-TESTE.md)
 
+- **Construção das Imagens Docker**  
+  Passo a passo para construção das imagens backend e frontend.  
+  → [docker-build-images.md](docker-build-images.md)
+
 - **Configuração do Keycloak**  
   Detalhamento do Realm, Clients, Roles e usuários de teste e Importação automática da estrutura básica.  
   → [keycloak-setup.md](keycloak-setup.md)
