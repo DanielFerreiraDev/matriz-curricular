@@ -54,10 +54,10 @@ será feito a construção mais segura e eficiente.
 ### Possíveis Evoluções
 
 - migration das tabelas do banco para se tornar mais escalável.
-- Melhorar fluxo de edição das Aulas.
-- Refatoração de métodos
-- Pensar em utilizar respositories pra consultas sql
-- Melhorar design das telas 
-- Melhorar fluxo de UI do usuário
-- Implementar mensagens de erro ao ser lançado exceções nas requisições
+- Melhorar fluxo de edição das Aulas (melhoria na regra de negócio).
+- Refatoração de métodos.
+- Pensar em utilizar respositories pra consultas sql.
+- Melhorar design das telas.
+- Melhorar fluxo de UI do usuário. [DONE]
+- Implementar mensagens de erro ao ser lançado exceções nas requisições. [DONE]
 

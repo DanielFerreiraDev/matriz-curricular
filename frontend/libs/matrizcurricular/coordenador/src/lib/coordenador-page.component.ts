@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
@@ -173,12 +173,11 @@ export class CoordenadorPageComponent implements OnInit {
     disciplinaId: 0,
     professorId: 0,
     horarioId: 0,
-    vagasMaximas: 40,
     cursosAutorizadosIds: [],
   };
 
 
-  constructor(private catalog: CatalogService, private matriz: MatrizService) {}
+  constructor(private catalog: CatalogService, private matriz: MatrizService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     forkJoin({
@@ -192,6 +191,8 @@ export class CoordenadorPageComponent implements OnInit {
         this.professores = r.professores;
         this.cursos = r.cursos;
         this.horarios = r.horarios;
+
+        this.cdr.detectChanges();
 
         this.form.disciplinaId = this.disciplinas[0]?.id ?? 0;
         this.form.professorId = this.professores[0]?.id ?? 0;
@@ -220,14 +221,23 @@ export class CoordenadorPageComponent implements OnInit {
         this.msg = 'Aula criada com sucesso!';
         this.carregarAulas();
       },
-      error: (e) => (this.msg = this.errMsg(e)),
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
   }
 
   carregarAulas() {
     this.matriz.listarAulasCoordenador().subscribe({
-      next: (a) => (this.aulas = a),
-      error: (e) => (this.msg = this.errMsg(e)),
+      next: (a) => {
+        this.aulas = a;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -238,8 +248,7 @@ export class CoordenadorPageComponent implements OnInit {
     this.editForm = {
       disciplinaId: a.disciplinaId,
       professorId: a.professorId,
-      horarioId: this.horarios[0]?.id ?? 0,
-      vagasMaximas: this.horarios[0]?.id ?? 0,
+      horarioId: a.horarioId,
       cursosAutorizadosIds: [...(a.cursosAutorizadosIds ?? [])],
     };
 
@@ -267,10 +276,13 @@ export class CoordenadorPageComponent implements OnInit {
       next: () => {
         this.msg = 'Aula atualizada!';
         this.cancelarEdicao();
+        this.carregarAulas();
       },
-      error: (e) => (this.msg = this.errMsg(e)),
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
-    this.carregarAulas();
   }
 
   excluir(aulaId: number) {
@@ -283,7 +295,10 @@ export class CoordenadorPageComponent implements OnInit {
         this.msg = 'Aula desativada!';
         this.carregarAulas();
       },
-      error: (e) => (this.msg = this.errMsg(e)),
+      error: (e) => {
+        this.msg = this.errMsg(e.error);
+        this.cdr.detectChanges();
+      },
     });
   }
 

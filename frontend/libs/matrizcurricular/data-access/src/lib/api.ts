@@ -13,7 +13,6 @@ export type AulaUpdateRequest = {
   disciplinaId: number;
   professorId: number;
   horarioId: number;
-  vagasMaximas: number;
   cursosAutorizadosIds: number[];
 }
 
